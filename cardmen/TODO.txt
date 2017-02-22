@@ -27,6 +27,7 @@ messages
  - potentially the common setup stuff for nservice bus, maybe even the DI net core extension methods
 
 docker
+ - for now, remove the compose stuff, make proper dockerfile, make own compose without dev/prod stuff in, keep watch stuff?
  - the web app container
  - rabbit mq container
  - storage service container
