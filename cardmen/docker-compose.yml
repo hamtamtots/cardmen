@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+  rabbit:
+    image: rabbitmq:management
+    ports:
+      - "4369:4369"
+      - "5671-5672:5671-5672"
+      - "15671-15672:15671-15672"
+      - "25672:25672"
+  elastic:
+    image: elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
