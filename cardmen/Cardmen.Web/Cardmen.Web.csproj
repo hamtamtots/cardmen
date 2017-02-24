@@ -11,6 +11,10 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.0" />
+    <PackageReference Include="Autofac" Version="4.3.0" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.0.0" />
+    <PackageReference Include="NServiceBus.Autofac" Version="6.0.1" />
+    <PackageReference Include="NServiceBus.RabbitMQ" Version="4.2.1" />
   </ItemGroup>
 
 </Project>

@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "Cardmen.Storage": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "RABBITMQ_CONNECTION_STRING": "host=192.168.99.100",
+        "ENDPOINT_NAME": "Storage.Endpoint"
+      }
+    }
+  }
+}

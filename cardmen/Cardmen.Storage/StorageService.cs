@@ -1,28 +1,24 @@
 ﻿using Microsoft.Extensions.Logging;
 using NServiceBus;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Cardmen.Client
+namespace Cardmen.Storage
 {
-    class Service : IDisposable
+    class StorageService : IDisposable
     {
 
         private ILogger _log;
         private IEndpointInstance _endpoint;
 
 
-        public Service(ILoggerFactory logFactory, IEndpointInstance endpoint)
+        public StorageService(ILoggerFactory logFactory, IEndpointInstance endpoint)
         {
-            _log = logFactory.CreateLogger<Service>();
+            _log = logFactory.CreateLogger<StorageService>();
             _endpoint = endpoint;
             _log.LogInformation("Service created");
             Start();
         }
-        
+
 
         public void Dispose()
         {

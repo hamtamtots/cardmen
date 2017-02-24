@@ -1,25 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NServiceBus;
+using System;
 
 namespace Cardmen.Web
 {
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services)
+
+        private IContainer _container;
+        
+
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            IConfigurationRoot config = new ConfigurationBuilder()
+                .AddEnvironmentVariables()
+                .Build();
+
+            var endpointConfig = ConfigureEndpoint(config);
+
+            services
+                .AddLogging()
+                .AddSingleton(_ => Endpoint.Start(endpointConfig).Result)
+                .AddSingleton(config)
+                .AddSingleton<FrontendService>();
+
+            var builder = new ContainerBuilder();
+            builder.Populate(services);
+            _container = builder.Build();
+            endpointConfig.UseContainer<AutofacBuilder>(customizations => customizations.ExistingLifetimeScope(_container));
+            return new AutofacServiceProvider(_container);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+
+        public void Configure(
+            IApplicationBuilder app, 
+            IHostingEnvironment env, 
+            ILoggerFactory loggerFactory, 
+            IApplicationLifetime appLifetime)
         {
             loggerFactory.AddConsole();
 
@@ -30,8 +54,24 @@ namespace Cardmen.Web
 
             app.Run(async (context) =>
             {
-                await context.Response.WriteAsync("Hello World!");
+                var feService = context.RequestServices.GetService<FrontendService>();
+                await context.Response.WriteAsync("blah");
             });
+
+            appLifetime.ApplicationStopped.Register(() => _container.Dispose());
+        }
+
+
+        private EndpointConfiguration ConfigureEndpoint(IConfigurationRoot configuration)
+        {
+            var endpointConfig = new EndpointConfiguration(configuration["ENDPOINT_NAME"] ?? "Frontend.Endpoint");
+            var transport = endpointConfig.UseTransport<RabbitMQTransport>();
+            transport.ConnectionString(configuration["RABBITMQ_CONNECTION_STRING"] ?? "host=192.168.99.100");
+            endpointConfig.UsePersistence<InMemoryPersistence>();
+            endpointConfig.SendFailedMessagesTo("error");
+            endpointConfig.EnableInstallers();
+            endpointConfig.MakeInstanceUniquelyAddressable(configuration["ENDPOINT_INSTANCE_ID"] ?? "_1");
+            return endpointConfig;
         }
     }
 }

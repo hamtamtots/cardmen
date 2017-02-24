@@ -1,10 +1,10 @@
 {
   "profiles": {
-    "Cardmen.Client": {
+    "Cardmen.Search": {
       "commandName": "Project",
       "environmentVariables": {
         "RABBITMQ_CONNECTION_STRING": "host=192.168.99.100",
-        "ENDPOINT_NAME": "Client.Endpoint"
+        "ENDPOINT_NAME": "Search.Endpoint"
       }
     }
   }
