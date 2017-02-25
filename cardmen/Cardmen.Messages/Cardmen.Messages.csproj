@@ -10,10 +10,4 @@
     <PackageReference Include="NServiceBus.RabbitMQ" Version="4.2.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Commands\" />
-    <Folder Include="Events\" />
-    <Folder Include="Messages\" />
-  </ItemGroup>
-
 </Project>
