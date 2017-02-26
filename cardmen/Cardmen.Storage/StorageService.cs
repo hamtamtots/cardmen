@@ -29,8 +29,6 @@ namespace Cardmen.Storage
         private void Start()
         {
             _log.LogInformation("Service starting");
-            // endpoint should have been created from DI
-            // do shit now? send stuff or just do nothing, let handlers worry about shit
             _log.LogInformation("Service started");
         }
 

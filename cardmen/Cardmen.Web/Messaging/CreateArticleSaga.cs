@@ -20,8 +20,16 @@ namespace Cardmen.Web.Messaging
 
         public Task Handle(CreateArticle message, IMessageHandlerContext context)
         {
+            LogInfo("Saga started");
             context.Publish(new ArticleCreated() { ArticleId = message.ArticleId });
             return Task.CompletedTask;
+        }
+
+
+        protected override void ConfigureHowToFindSaga(SagaPropertyMapper<ArticleOperationData> mapper)
+        {
+            base.ConfigureHowToFindSaga(mapper);
+            mapper.ConfigureMapping<CreateArticle>(msg => msg.ArticleId).ToSaga(data => data.ArticleId);
         }
 
     }

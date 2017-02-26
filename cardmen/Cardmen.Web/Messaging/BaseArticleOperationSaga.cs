@@ -2,8 +2,6 @@
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using System.Threading.Tasks;
-using System;
-using Cardmen.Messages.Commands;
 
 namespace Cardmen.Web.Messaging
 {
@@ -19,7 +17,6 @@ namespace Cardmen.Web.Messaging
         public BaseArticleOperationSaga(ILogger log)
         {
             _log = log;
-            LogInfo($"Saga created");
         }
 
 
@@ -35,6 +32,7 @@ namespace Cardmen.Web.Messaging
         {
             Data.IsArticleStored = true;
             LogInfo("Article stored");
+            CheckForSagaCompletion();
             return Task.CompletedTask;
         }
 
@@ -43,6 +41,7 @@ namespace Cardmen.Web.Messaging
         {
             Data.IsArticleIndexed = true;
             LogInfo("Article indexed");
+            CheckForSagaCompletion();
             return Task.CompletedTask;
         }
 

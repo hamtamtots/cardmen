@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Cardmen.Messages.Commands;
+using Microsoft.Extensions.Logging;
 using NServiceBus;
 using System;
 
@@ -23,6 +24,12 @@ namespace Cardmen.Web
         public void Dispose()
         {
             Stop();
+        }
+
+
+        public void CreateArticle(Guid articleId)
+        {
+            _endpoint.SendLocal(new CreateArticle() { ArticleId = articleId });
         }
 
 

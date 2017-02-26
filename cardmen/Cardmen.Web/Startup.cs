@@ -55,6 +55,7 @@ namespace Cardmen.Web
             app.Run(async (context) =>
             {
                 var feService = context.RequestServices.GetService<FrontendService>();
+                feService.CreateArticle(Guid.NewGuid());
                 await context.Response.WriteAsync("blah");
             });
 
