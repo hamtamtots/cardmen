@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using System.IO;
 
-namespace Cardmen.Web
+namespace Cardmen.Web.Server
 {
     public class Program
     {

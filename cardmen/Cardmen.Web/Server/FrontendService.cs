@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using NServiceBus;
 using System;
 
-namespace Cardmen.Web
+namespace Cardmen.Web.Server
 {
     public class FrontendService : IDisposable
     {

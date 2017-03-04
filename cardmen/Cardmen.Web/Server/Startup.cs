@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using NServiceBus;
 using System;
 
-namespace Cardmen.Web
+namespace Cardmen.Web.Server
 {
     public class Startup
     {
@@ -52,12 +52,9 @@ namespace Cardmen.Web
                 app.UseDeveloperExceptionPage();
             }
 
-            app.Run(async (context) =>
-            {
-                var feService = context.RequestServices.GetService<FrontendService>();
-                feService.CreateArticle(Guid.NewGuid());
-                await context.Response.WriteAsync("blah");
-            });
+            app
+                .UseDefaultFiles()
+                .UseStaticFiles();
 
             appLifetime.ApplicationStopped.Register(() => _container.Dispose());
         }
