@@ -72,6 +72,9 @@ namespace Cardmen.Web
             endpointConfig.SendFailedMessagesTo("error");
             endpointConfig.EnableInstallers();
             endpointConfig.MakeInstanceUniquelyAddressable(configuration["ENDPOINT_INSTANCE_ID"] ?? "_1");
+            endpointConfig.Conventions()
+                .DefiningCommandsAs(type => type.Namespace.Equals(typeof(Messages.Commands.CreateArticle).Namespace))
+                .DefiningEventsAs(type => type.Namespace.Equals(typeof(Messages.Events.ArticleCreated).Namespace));
             return endpointConfig;
         }
     }

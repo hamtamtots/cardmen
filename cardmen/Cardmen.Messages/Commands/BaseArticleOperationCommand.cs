@@ -1,9 +1,8 @@
-﻿using NServiceBus;
-using System;
+﻿using System;
 
 namespace Cardmen.Messages.Commands
 {
-    public class BaseArticleOperationCommand : ICommand
+    public class BaseArticleOperationCommand
     {
 
         public Guid ArticleId { get; set; }

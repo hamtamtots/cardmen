@@ -1,9 +1,8 @@
-﻿using NServiceBus;
-using System;
+﻿using System;
 
 namespace Cardmen.Messages.Events
 {
-    public class ArticleIndexUpdated : IEvent
+    public class ArticleIndexUpdated
     {
 
         public Guid ArticleId { get; set; }
