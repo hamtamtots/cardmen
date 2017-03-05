@@ -3,6 +3,7 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Nest;
 using NServiceBus;
 using System;
 using System.Threading.Tasks;
@@ -51,7 +52,15 @@ namespace Cardmen.Search
                 .AddLogging()
                 .AddSingleton(_ => Endpoint.Start(endpointConfig).Result)
                 .AddSingleton(config)
-                .AddSingleton<SearchService>();
+                .AddSingleton<SearchService>()
+                .AddSingleton<IElasticClient>(_ =>
+                {
+                    var elasticUri = new Uri(config["ELASTICSEARCH_URI"] ?? "http://192.168.99.100:9200");
+                    var connectionSettings = new ConnectionSettings(elasticUri)
+                        .DefaultIndex(config["ELASTICSEARCH_ARTICLE_INDEX_NAME"] ?? "articles");
+                    return new ElasticClient(connectionSettings);
+                })
+                .AddTransient<IArticleIndexer, ElasticSearchArticleIndexer>();
 
             var builder = new ContainerBuilder();
             builder.Populate(services);

@@ -21,8 +21,8 @@ namespace Cardmen.Web.Messaging
 
         public Task Handle(CreateArticle message, IMessageHandlerContext context)
         {
-            LogInfo("Saga started");
             Data.ArticleId = message.ArticleId;
+            LogInfo("Saga started");
             context.Publish(new ArticleCreated() { ArticleId = message.ArticleId, OperationKey = message.OperationKey });
             return Task.CompletedTask;
         }

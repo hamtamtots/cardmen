@@ -1,4 +1,5 @@
-﻿using Cardmen.Messages.Events;
+﻿using Cardmen.Messages;
+using Cardmen.Messages.Events;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using System.Threading.Tasks;
@@ -9,20 +10,21 @@ namespace Cardmen.Storage
     {
 
         ILogger _log;
+        IArticleStorageRepository _articleRepository;
 
 
-        public ArticleCreatedHandler(ILoggerFactory loggerFactory)
+        public ArticleCreatedHandler(ILoggerFactory loggerFactory, IArticleStorageRepository articleRepository)
         {
             _log = loggerFactory.CreateLogger<ArticleCreatedHandler>();
+            _articleRepository = articleRepository;
         }
 
 
-        public Task Handle(ArticleCreated message, IMessageHandlerContext context)
+        public async Task Handle(ArticleCreated message, IMessageHandlerContext context)
         {
             _log.LogInformation($"Article created event received for article {message.ArticleId}");
-            // do actual storage logic here, have async
-            context.Publish(new ArticleStoreUpdated() { ArticleId = message.ArticleId, OperationKey = message.OperationKey });
-            return Task.CompletedTask;
+            await _articleRepository.InsertArticle(new Article() { Id = message.ArticleId });
+            await context.Publish(new ArticleStoreUpdated() { ArticleId = message.ArticleId, OperationKey = message.OperationKey });
         }
     }
 }
