@@ -4,6 +4,7 @@ using Cardmen.Messages.Commands;
 using Cardmen.Messages.Events;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
+using Cardmen.Web.Server;
 
 namespace Cardmen.Web.Messaging
 {
@@ -12,8 +13,8 @@ namespace Cardmen.Web.Messaging
         IAmStartedByMessages<CreateArticle>
     {
 
-        public CreateArticleSaga(ILoggerFactory loggerFactory) : 
-            base(loggerFactory.CreateLogger<CreateArticleSaga>())
+        public CreateArticleSaga(ILoggerFactory loggerFactory, IArticleClientProxy articleClientProxy) : 
+            base(loggerFactory.CreateLogger<CreateArticleSaga>(), articleClientProxy)
         {
         }
 
@@ -21,7 +22,8 @@ namespace Cardmen.Web.Messaging
         public Task Handle(CreateArticle message, IMessageHandlerContext context)
         {
             LogInfo("Saga started");
-            context.Publish(new ArticleCreated() { ArticleId = message.ArticleId });
+            Data.ArticleId = message.ArticleId;
+            context.Publish(new ArticleCreated() { ArticleId = message.ArticleId, OperationKey = message.OperationKey });
             return Task.CompletedTask;
         }
 
@@ -29,7 +31,9 @@ namespace Cardmen.Web.Messaging
         protected override void ConfigureHowToFindSaga(SagaPropertyMapper<ArticleOperationData> mapper)
         {
             base.ConfigureHowToFindSaga(mapper);
-            mapper.ConfigureMapping<CreateArticle>(msg => msg.ArticleId).ToSaga(data => data.ArticleId);
+            mapper
+                .ConfigureMapping<CreateArticle>(msg => msg.OperationKey)
+                .ToSaga(data => data.OperationKey);
         }
 
     }

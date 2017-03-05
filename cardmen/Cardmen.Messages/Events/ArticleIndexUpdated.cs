@@ -1,10 +1,6 @@
-﻿using System;
-
-namespace Cardmen.Messages.Events
+﻿namespace Cardmen.Messages.Events
 {
-    public class ArticleIndexUpdated
+    public class ArticleIndexUpdated : BaseArticleOperationEvent
     {
-
-        public Guid ArticleId { get; set; }
     }
 }

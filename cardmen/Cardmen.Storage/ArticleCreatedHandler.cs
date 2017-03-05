@@ -21,7 +21,7 @@ namespace Cardmen.Storage
         {
             _log.LogInformation($"Article created event received for article {message.ArticleId}");
             // do actual storage logic here, have async
-            context.Publish(new ArticleStoreUpdated() { ArticleId = message.ArticleId });
+            context.Publish(new ArticleStoreUpdated() { ArticleId = message.ArticleId, OperationKey = message.OperationKey });
             return Task.CompletedTask;
         }
     }

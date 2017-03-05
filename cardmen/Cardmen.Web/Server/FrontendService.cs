@@ -2,10 +2,11 @@
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using System;
+using System.Threading.Tasks;
 
 namespace Cardmen.Web.Server
 {
-    public class FrontendService : IDisposable
+    public class FrontendService : IDisposable, IArticleRepository
     {
 
         private ILogger _log;
@@ -27,17 +28,16 @@ namespace Cardmen.Web.Server
         }
 
 
-        public void CreateArticle(Guid articleId)
+        public async Task CreateArticleAsync(Guid articleId, string operationKey)
         {
-            _endpoint.SendLocal(new CreateArticle() { ArticleId = articleId });
+            await _endpoint.SendLocal(new CreateArticle() { ArticleId = articleId, OperationKey = operationKey });
+            _log.LogInformation($"Article creation command sent, id: {articleId}");
         }
 
 
         private void Start()
         {
             _log.LogInformation("Service starting");
-            // endpoint should have been created from DI
-            // do shit now? send stuff or just do nothing, let handlers worry about shit
             _log.LogInformation("Service started");
         }
 

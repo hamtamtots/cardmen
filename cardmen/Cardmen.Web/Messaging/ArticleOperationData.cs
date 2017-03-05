@@ -9,6 +9,9 @@ namespace Cardmen.Web.Messaging
         public Guid ArticleId { get; set; }
 
 
+        public string OperationKey { get; set; }
+
+
         public bool IsArticleStored { get; set; } = false;
 
 

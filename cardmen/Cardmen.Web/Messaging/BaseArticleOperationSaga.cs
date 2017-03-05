@@ -1,6 +1,9 @@
 ﻿using Cardmen.Messages.Events;
+using Cardmen.Web.Server;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
+using System;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Cardmen.Web.Messaging
@@ -12,18 +15,24 @@ namespace Cardmen.Web.Messaging
     {
 
         private ILogger _log;
+        private IArticleClientProxy _articleClientProxy;
         
 
-        public BaseArticleOperationSaga(ILogger log)
+        public BaseArticleOperationSaga(ILogger log, IArticleClientProxy articleClientProxy)
         {
             _log = log;
+            _articleClientProxy = articleClientProxy;
         }
 
 
         protected override void ConfigureHowToFindSaga(SagaPropertyMapper<ArticleOperationData> mapper)
         {
-            mapper.ConfigureMapping<ArticleStoreUpdated>(msg => msg.ArticleId).ToSaga(data => data.ArticleId);
-            mapper.ConfigureMapping<ArticleIndexUpdated>(msg => msg.ArticleId).ToSaga(data => data.ArticleId);
+            mapper
+                .ConfigureMapping<ArticleStoreUpdated>(msg => msg.OperationKey)
+                .ToSaga(data => data.OperationKey);
+            mapper
+                .ConfigureMapping<ArticleIndexUpdated>(msg => msg.OperationKey)
+                .ToSaga(data => data.OperationKey);
         }
 
 
@@ -57,6 +66,7 @@ namespace Cardmen.Web.Messaging
             if(Data.IsArticleStored && Data.IsArticleIndexed)
             {
                 LogInfo("Saga complete");
+                _articleClientProxy.NotifyArticleOperationSuccessful(Data.ArticleId, Data.OperationKey);
                 MarkAsComplete();
             }
         }

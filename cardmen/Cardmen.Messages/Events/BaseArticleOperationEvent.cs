@@ -6,5 +6,8 @@ namespace Cardmen.Messages.Events
     {
 
         public Guid ArticleId { get; set; }
+
+
+        public string OperationKey { get; set; }
     }
 }

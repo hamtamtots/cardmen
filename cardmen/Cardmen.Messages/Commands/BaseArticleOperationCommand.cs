@@ -6,5 +6,8 @@ namespace Cardmen.Messages.Commands
     {
 
         public Guid ArticleId { get; set; }
+
+
+        public string OperationKey { get; set; }
     }
 }

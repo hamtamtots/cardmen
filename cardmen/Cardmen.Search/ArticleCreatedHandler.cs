@@ -21,7 +21,7 @@ namespace Cardmen.Search
         {
             _log.LogInformation($"Article created event received for article {message.ArticleId}");
             // do actual index logic here, have async
-            context.Publish(new ArticleIndexUpdated() { ArticleId = message.ArticleId });
+            context.Publish(new ArticleIndexUpdated() { ArticleId = message.ArticleId, OperationKey = message.OperationKey });
             return Task.CompletedTask;
         }
     }

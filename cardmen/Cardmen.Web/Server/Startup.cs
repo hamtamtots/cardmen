@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Cardmen.Web.Server.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -29,7 +30,9 @@ namespace Cardmen.Web.Server
                 .AddLogging()
                 .AddSingleton(_ => Endpoint.Start(endpointConfig).Result)
                 .AddSingleton(config)
-                .AddSingleton<FrontendService>();
+                .AddSingleton<IArticleRepository, FrontendService>()
+                .AddSingleton<IArticleClientProxy, ArticleHubClientProxy>()
+                .AddSignalR(options => options.Hubs.EnableDetailedErrors = true);
 
             var builder = new ContainerBuilder();
             builder.Populate(services);
@@ -54,7 +57,9 @@ namespace Cardmen.Web.Server
 
             app
                 .UseDefaultFiles()
-                .UseStaticFiles();
+                .UseStaticFiles()
+                .UseSignalR()
+                .UseWebSockets();
 
             appLifetime.ApplicationStopped.Register(() => _container.Dispose());
         }
