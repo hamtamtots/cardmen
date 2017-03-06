@@ -10,3 +10,6 @@ import '@angular/http';
 import '@angular/platform-browser';
 import '@angular/platform-browser-dynamic';
 import '@angular/router';
+
+import 'expose-loader?jQuery!jquery';
+import '../node_modules/signalr/jquery.signalR.js';
